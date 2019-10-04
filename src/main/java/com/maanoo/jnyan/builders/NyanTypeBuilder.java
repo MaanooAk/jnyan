@@ -79,7 +79,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
 
     public NyanType build(Database database) {
 
-        assert name != null || params != null;
+        assert name == null || params == null;
 
         if (name != null) {
             return new NyanType.Reference(database.get(name));

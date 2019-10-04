@@ -23,6 +23,10 @@ public class ObjectIter<T> implements Iterator<T> {
         return index;
     }
 
+    public T first() {
+        return objects.get(0);
+    }
+
     // ===
 
     public boolean has() {

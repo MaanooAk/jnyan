@@ -61,7 +61,8 @@ public class NyanOperationBuilder implements Builder<NyanOperation> {
 
         }
 
-        throw first != null ? first : new RuntimeException("Not supported operation " + operation + " on " + target);
+        throw first != null ? new RuntimeException("Could not parse value of operation @ " + value.getOrigin(), first)
+                : new RuntimeException("Not supported operation " + operation + " on " + target);
     }
 
 }

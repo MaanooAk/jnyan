@@ -33,15 +33,15 @@ public class Database extends View {
 
     public void load(Path path) throws IOException {
         final String text = new String(Files.readAllBytes(path), Charset.forName("UTF-8"));
-        load(text);
+        load(text, path.getFileName().toString());
     }
 
-    public void load(String text) {
+    public void load(String text, String source) {
 
         // TODO clean up
 
         final Parser p = new Parser();
-        final List<Token> l = p.parse(text);
+        final List<Token> l = p.parse(text, source);
 
         final TokenIter iter = new TokenIter(l);
 

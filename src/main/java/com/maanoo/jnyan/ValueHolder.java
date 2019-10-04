@@ -80,7 +80,13 @@ public abstract class ValueHolder {
         }
 
         public Int(TokenIter iter) {
-            value = Integer.parseInt(iter.next(Token.Type.Number).text);
+            final String text = iter.next(Token.Type.Number).text;
+            try {
+                value = Integer.parseInt(text);
+            } catch (final NumberFormatException e) {
+                iter.skip(-1); // got back one step
+                throw new RuntimeException(text + " is not a integer");
+            }
         }
 
         @Override
@@ -216,13 +222,19 @@ public abstract class ValueHolder {
             String end, NyanType type, Database database) {
 
         iter.consume(Token.Type.Keyword, start);
+
+        if (iter.peek().text.equals(end)) {
+            iter.consume(Token.Type.Keyword, end);
+            return; // empty collection
+        }
+
         while (iter.has()) {
 
             values.add(ValueHolder.create(type, iter, database));
 
             if (iter.peek().text.equals(end)) {
                 iter.consume(Token.Type.Keyword, end);
-                break;
+                return;
             } else {
                 iter.consume(Token.Type.Keyword, sep);
             }
@@ -234,6 +246,12 @@ public abstract class ValueHolder {
             String sep, String sepsep, String end, NyanType type1, NyanType type2, Database database) {
 
         iter.consume(Token.Type.Keyword, start);
+
+        if (iter.peek().text.equals(end)) {
+            iter.consume(Token.Type.Keyword, end);
+            return; // empty collection
+        }
+
         while (iter.has()) {
 
             final ValueHolder v1 = ValueHolder.create(type1, iter, database);
@@ -244,7 +262,7 @@ public abstract class ValueHolder {
 
             if (iter.peek().text.equals(end)) {
                 iter.consume(Token.Type.Keyword, end);
-                break;
+                return;
             } else {
                 iter.consume(Token.Type.Keyword, sep);
             }

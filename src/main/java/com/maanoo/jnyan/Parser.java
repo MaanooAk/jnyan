@@ -3,6 +3,7 @@ package com.maanoo.jnyan;
 
 import java.util.ArrayList;
 
+import com.maanoo.jnyan.Token.Origin;
 import com.maanoo.jnyan.util.StringIter;
 import com.maanoo.jnyan.util.StringSet;
 
@@ -63,10 +64,16 @@ public class Parser {
     }
 
     public ArrayList<Token> parse(String text) {
+        return parse(text, ":");
+    }
+
+    public ArrayList<Token> parse(String text, String source) {
+        final Origin.Tracker origin = new Origin.Tracker(source);
+
         final ArrayList<Token> l = new ArrayList<>();
 
         // add padding for the start of the line condition check
-        l.add(new Token(Token.Type.Newline));
+        l.add(new Token(Token.Type.Newline, origin.get()));
 
         // add padding for the lookahead check
         final Iter iter = new Iter(text + "\n");
@@ -79,21 +86,22 @@ public class Parser {
 
             if (c == '#') { // single line comments
                 final String comment = iter.collectUntill(newline, nothing);
-                l.add(new Token(Token.Type.Comment, comment));
+                // l.add(new Token(Token.Type.Comment, comment, origin.get()));
 
             } else if (c == '\n') { // end of line
-                l.add(new Token(Token.Type.Newline, ";\n"));
+                origin.addLine();
+                l.add(new Token(Token.Type.Newline, "\n", origin.get()));
                 iter.skip();
 
             } else if (iter.contains(delims, iter.peek(), iter.peek(1))) { // keywords
                 final String m = iter.match(delims, iter.peek(), iter.peek(1));
-                l.add(new Token(Token.Type.Keyword, m));
+                l.add(new Token(Token.Type.Keyword, m, origin.get()));
                 iter.skip(m.length());
 
             } else if (iter.contains(whitespace, iter.peek(), iter.peek(1))) { // whitespace
                 final String pad = iter.collectUntillLast(whitespace);
                 if (l.get(l.size() - 1).type == Token.Type.Newline) {
-                    l.add(new Token(Token.Type.Indent, pad));
+                    l.add(new Token(Token.Type.Indent, pad, origin.get()));
                 }
                 iter.skip();
 
@@ -115,7 +123,7 @@ public class Parser {
                     token += iter.collectUntill(stringend, stringend);
                 }
                 iter.skip(1);
-                l.add(new Token(Token.Type.Text, token));
+                l.add(new Token(Token.Type.Text, token, origin.get()));
 
             } else { // values and names
                 final String token = iter.collectUntill(delims, whitespace);
@@ -124,7 +132,7 @@ public class Parser {
                         token.matches("(true|false)") ? Token.Type.Bool : //
                                 Token.Type.Name;
 
-                l.add(new Token(type, token));
+                l.add(new Token(type, token, origin.get()));
 
             }
 

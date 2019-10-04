@@ -50,4 +50,8 @@ public class NyanValueBuilder implements Builder<NyanValue> {
         return new NyanValue(type, value);
     }
 
+    public Token.Origin getOrigin() {
+        return subIter.first().origin;
+    }
+
 }

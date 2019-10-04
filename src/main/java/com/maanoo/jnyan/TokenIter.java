@@ -44,21 +44,23 @@ public class TokenIter extends ObjectIter<Token> {
 
     private void check(int skip, Token.Type type) {
 
-        if (!has(1 + skip)) throw new RuntimeException("Expected " + type + " instead of end.");
+        if (!has(1 + skip)) throw new RuntimeException("Expected " + type + " instead of end @ " + peek(0).origin);
 
         final Token t = peek(skip);
         if (t.type != type) {
-            throw new RuntimeException("Expected " + type + " instead of " + peek(0) + ".");
+            throw new RuntimeException("Expected " + type + " instead of " + peek(0) + " @ " + peek(0).origin);
         }
     }
 
     private void check(int skip, Token.Type type, String text) {
 
-        if (!has(1 + skip)) throw new RuntimeException("Expected " + type + "(" + text + ") instead of end.");
+        if (!has(1 + skip))
+            throw new RuntimeException("Expected " + type + "(" + text + ") instead of end @ " + peek(0).origin);
 
         final Token t = peek(skip);
         if (t.type != type || !t.text.equals(text)) {
-            throw new RuntimeException("Expected " + type + "(" + text + ") instead of " + t + ".");
+            throw new RuntimeException("Expected " + type + "(" + text + ") instead of " + t + " @ " + peek(0).origin);
         }
     }
+
 }
