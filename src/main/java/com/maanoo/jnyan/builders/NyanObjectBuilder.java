@@ -27,6 +27,10 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
     public final HashMap<String, NyanObjectBuilder> children;
 
     public NyanObjectBuilder(TokenIter iter, String namespace) {
+        this(iter, namespace, 1);
+    }
+
+    public NyanObjectBuilder(TokenIter iter, String namespace, int depth) {
         name = (namespace != null ? namespace + "." : "") + iter.next().text;
 
         parents = new ArrayList<>();
@@ -80,11 +84,17 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
         // String indent = iter.next().text; //(Token.Type.Indent);
 
-        while (iter.peek(0).type == Token.Type.Indent) {
+        while (iter.has(2) && iter.peek(0).type == Token.Type.Indent && iter.peek(0).text.equals(depth + "")) {
             iter.skip(1);
 
             if (iter.peek(0).type == Token.Type.Newline) {
                 iter.skip(1);
+                continue;
+            }
+
+            if (iter.peek(0).text.equals("...")) {
+                iter.skip(1);
+                iter.consume(Token.Type.Newline);
                 continue;
             }
 
@@ -101,7 +111,8 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
                 }
 
             } else if (op.equals("(") || op.equals("<")) {
-                children.put(name, new NyanObjectBuilder(iter, name));
+                children.put(name, new NyanObjectBuilder(iter, namespace, depth + 1));
+                continue;
 
             } else {
                 iter.skip(1);
@@ -109,6 +120,10 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
             }
             iter.consume(Token.Type.Newline);
+
+            while (iter.has() && iter.peek(0).type == Token.Type.Newline) {
+                iter.skip();
+            }
 
         }
 
@@ -132,6 +147,8 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
         }
 
         for (final NyanOperationBuilder i : operations.values()) {
+            // TODO remove the depen, create empty objects at the start and then fill them
+            // after the references are set
             i.depens(depens);
         }
 

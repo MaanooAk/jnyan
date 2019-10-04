@@ -99,9 +99,10 @@ public class Parser {
                 iter.skip(m.length());
 
             } else if (iter.contains(whitespace, iter.peek(), iter.peek(1))) { // whitespace
-                final String pad = iter.collectUntillLast(whitespace);
+                final String pad = iter.collectUntillLast(whitespace).replace("\t", "    ");
                 if (l.get(l.size() - 1).type == Token.Type.Newline) {
-                    l.add(new Token(Token.Type.Indent, pad, origin.get()));
+                    // TODO improve
+                    l.add(new Token(Token.Type.Indent, pad.length() / 4 + "", origin.get()));
                 }
                 iter.skip();
 

@@ -110,7 +110,10 @@ public abstract class ValueHolder {
         }
 
         public Float(TokenIter iter) {
-            value = java.lang.Float.parseFloat(iter.next(Token.Type.Number).text);
+            final String text = iter.next(Token.Type.Number).text;
+            if (text.equals("inf")) value = java.lang.Float.POSITIVE_INFINITY;
+            else if (text.equals("-inf")) value = java.lang.Float.NEGATIVE_INFINITY;
+            else value = java.lang.Float.parseFloat(text);
         }
 
         @Override

@@ -21,6 +21,8 @@ public class NyanOperation {
         AddList(List, "+="), //
         AddDict(Dict, "+="), //
 
+        SubtractI(Int, "-="), //
+
         DivideI(Int, "/="), //
         DivideIF(Int, "/=", Float), //
         DivideF(Float, "/="),
@@ -64,6 +66,9 @@ public class NyanOperation {
                 return true;
             case AddFI:
                 ((ValueHolder.Float) target).value += ((ValueHolder.Int) value).value;
+                return true;
+            case SubtractI:
+                ((ValueHolder.Int) target).value -= ((ValueHolder.Int) value).value;
                 return true;
             case MultiplyI:
                 ((ValueHolder.Int) target).value *= ((ValueHolder.Int) value).value;

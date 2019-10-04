@@ -64,7 +64,7 @@ public class Database extends View {
 
                 final NyanObjectBuilder ob = new NyanObjectBuilder(iter, namespace);
                 all.add(ob);
-
+                all.addAll(ob.children.values());
             }
 
             while (iter.has(1) && iter.peek(0).type == Token.Type.Newline)
@@ -86,7 +86,10 @@ public class Database extends View {
         int lastsize = 0;
         while (!left.isEmpty()) {
             if (left.size() == lastsize) {
-                throw new RuntimeException("Cannot find depens of " + left.iterator().next());
+                final NyanObjectBuilder stuck = left.iterator().next();
+                final Set<String> depens = stuck.depens();
+                depens.removeAll(done);
+                throw new RuntimeException("Cannot find depens of " + stuck.name + ": " + depens);
             }
             lastsize = left.size();
             for (final Iterator<NyanObjectBuilder> it = left.iterator(); it.hasNext();) {
