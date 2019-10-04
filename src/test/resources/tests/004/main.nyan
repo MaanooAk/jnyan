@@ -1,0 +1,48 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/doc/nyan.md @2019-10-04
+
+# Defined in the game engine:
+
+Mod():
+    name : text
+    patches : set(Patch)
+
+Building():
+    name : text
+
+Resource():
+    name : text
+    icon : file
+
+DropSite():
+    accepted_resources : set(Resource)
+
+
+# Above are engine features.
+# Lets create content in your official game data pack now:
+
+Gold(Resource):
+    name = "Bling bling"
+    icon = "gold.svg"
+
+Food(Resource):
+    name = "Nom nom"
+    icon = "food.svg"
+
+TownCenter(Building, DropSite):
+    name = "Town Center"
+    accepted_resources = {Gold, Food}
+
+
+# Now let's have a user mod that adds a new resource:
+
+Silicon(Resource):
+    name = "Silicon"
+
+TCSilicon<TownCenter>():
+    accepted_resources += {Silicon}
+
+SiliconMod(Mod):
+    name = "The modern age has started: Behold the microchips!"
+    patches = {TCSilicon}
+    
+    

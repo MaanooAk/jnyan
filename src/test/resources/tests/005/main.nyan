@@ -1,0 +1,52 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/doc/nyan.md @2019-10-04
+
+# Game engine defines:
+Tech():
+    name : text
+    updates : set(Patch)
+
+Mod():
+    name : text
+    patches : set(Patch)
+
+Ability():
+    mouse_animation : file
+
+Unit():
+    name : text
+    hp : int
+    abilities : set(Ability)
+
+Building():
+    name : text
+    researches : set(Tech)
+    creates : set(Unit)
+
+
+# Base game data defines:
+Villager(Unit):
+    name = "Villager"
+    hp = 25
+
+LoomVillagerHP<Villager>():
+    hp += 15
+
+Loom(Tech):
+    name = "Research Loom to give villagers more HP"
+    updates = {LoomVillagerHP}
+
+TownCenter(Building):
+    researches = {Loom}
+    creates = {Villager}
+
+
+# User mod decreases the HP amount:
+BalanceHP<LoomVillagerHP>():
+    hp -= 5
+
+LoomBalance(Mod):
+    name = "Balance the Loom research to give"
+    patches = {BalanceHP}
+
+# in the mod pack metadata file, LoomBalance is denoted in the index.nfo
+# to be loaded into the mod list of the engine.

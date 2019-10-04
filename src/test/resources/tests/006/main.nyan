@@ -1,0 +1,97 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/doc/nyan.md @2019-10-04
+
+# The engine defines:
+Mod():
+    name : text
+    patches : set(Patch)
+
+Ability():
+    mouse_animation : file
+
+Unit():
+    name : text
+    hp : int
+    abilities : set(Ability)
+
+Resource():
+    name : text
+    icon : file
+
+DropSite():
+    accepted_resources : set(Resource)
+
+Animation():
+    image : file
+    frames : int = 1
+    loop : bool = true
+    speed : float = 15.0
+
+Ability():
+    animation : Animation
+
+CooldownAbility(Ability):
+    recharge_time : float
+
+Movement(Ability):
+    speed : float
+    instant : bool = false
+    range : float = inf
+
+CollectResource(Movement):
+    target : Resource
+    collect_animation : Animation
+
+
+# Base game data defines:
+Wood(Resource):
+    name = "chop chop"
+    icon = "wood.svg"
+
+VillagerWalking(Animation):
+    image = "walking_villager.png"
+    frames = 18
+
+VillagerMovement(Movement):
+    animation = VillagerWalking
+    speed = 15.0
+
+WoodTransport(Animation):
+    image = "wood_transport.png"
+    frames = 20
+
+WoodChop(Animation):
+    image = "wood_transport.png"
+    frames = 20
+
+CollectWood(CollectResource):
+    target = Wood
+    animation = WoodTransport
+    collect_animation = WoodChop
+    speed = 12.0
+
+Villager(Unit):
+    name = "Villager"
+    hp = 25
+    abilities += {VillagerMovement, CollectWood}
+
+
+# Teleport mod:
+TeleportBlurb(Animation):
+    image = "teleport_whooosh.png"
+    frames = 10
+    speed = 2
+
+Teleport(Movement, CooldownAbility):
+    speed = 0.0
+    instant = true
+    recharge_time = 30.0
+    range = 5
+    animation = TeleportBlurb
+
+EnableTeleport<Villager>():
+    abilities += {Teleport}
+
+TeleportMod(Mod):
+    name = "Awesome teleport feature to sneak into bastions easily"
+    patches = {EnableTeleport}
+

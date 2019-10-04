@@ -1,0 +1,66 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/doc/nyan.md @2019-10-04
+
+# engine features:
+
+Ability():
+    ...
+
+Behaviour():
+    ...
+
+Resource():
+    name : text
+
+DieAbility(Ability):
+    die_animation : file
+    become : Unit
+
+Huntable(Ability):
+    hunting_reaction : Behaviour
+
+Unit():
+    abilities : set(Ability)
+    hp : int
+
+ResourceAmount():
+    type : Resource
+    amount : float
+
+ResourceSpot():
+    resources : set(ResourceAmount)
+
+IntelligentFlee(Behaviour):
+    ...
+
+
+# content pack:
+
+Food(Resource):
+    ...
+
+Animal(Unit):
+    ...
+
+Deer(Animal):
+    DeerDie(DieAbility):
+        die_animation = "deer_die.png"
+        become = DeadDeer
+
+    DeerHuntable(Huntable):
+        hunting_reaction = IntelligentFlee
+
+    hp = 10
+    graphic = "deer.png"
+    abilities |= {DeerDie, DeerHuntable}
+
+DeadDeer(Deer, ResourceSpot):
+    DeerFood(ResourceAmount):
+        type = Food
+        amount = 250
+
+    graphic = "dead_deer.png"
+    resources = {DeerFood}
+
+    
+    
+    

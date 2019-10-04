@@ -1,0 +1,70 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/README.md @2019-10-04
+
+# This is the content and mod API of the Engine:
+
+Unit():
+    hp : int
+    animation : file
+
+Building():
+    hp : int
+    creates : set(Unit)
+    model : file
+
+    
+# base_game_data.nyan
+
+OverwatchSoldier(Unit):
+    hp = 50
+    animation = "./assets/soldier.ani"
+
+Strider(Unit):
+    hp = 2100
+    animation = "./assets/strider.ani"
+
+CombineCitadel(Building):
+    hp = 9001
+    creates = {OverwatchSoldier, Strider}
+    model = "./assets/lambda_hq.mdl"
+
+Citizen(Unit):
+    hp = 60
+    animation = "./assets/male09.ani"
+
+# gordon is a citizen with more hp
+Gordon(Citizen):
+    hp += 40
+    animation = "./assets/gordon.ani"
+
+RebelHQ(Building):
+    hp = 5000
+    creates = {Citizen, Gordon}
+    model = "./assets/lambda_hq.mdl"
+    
+
+# elite_strider_mod.nyan
+
+# create a new unit:
+OverwatchElite(Unit):
+    hp = 70
+
+# change the strider:
+ChangeStrider<Strider>():
+    hp += 1000
+
+# change the citadel to build the elite:
+AddElite<CombineCitadel>():
+    creates += {OverwatchElite}
+
+# create a mod that informs the engine about its patches
+StriderEliteMod(Mod):
+    name = "Add the elite and make striders stronger"
+    patches = {AddElite, ChangeStrider}
+
+
+# =====
+
+Mod():
+	name : text
+	patches : set(Patch)
+

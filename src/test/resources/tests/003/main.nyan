@@ -1,0 +1,51 @@
+# SOURCE: https://github.com/SFTtech/nyan/blob/master/doc/nyan.md @2019-10-04
+
+# Engine API definition: engine.nyan
+
+Mod():
+    patches : orderedset(Patch)
+
+Tech():
+    patches : orderedset(Patch)
+
+Unit():
+    hp : int
+    can_create : set(Unit) = {}
+    can_research : set(Tech) = {}
+
+CFG():
+    initial_buildings : set(Unit)
+    name : text
+
+StartConfigs():
+    # available start game configurations
+    available : set(CFG) = {}
+    
+# Data pack: pack.nyan
+
+import engine
+
+Villager(engine.Unit):
+    hp = 100
+    can_create = {TownCenter}
+
+Loom(Tech):
+    HPBoost<Villager>():
+        hp += 50
+
+    patches = {HPBoost}
+
+TownCenter(engine.Unit):
+    hp = 1500
+    can_create = {Villager}
+    can_research = {Loom}
+
+DefaultConfig(engine.CFG):
+    initial_buildings = {TownCenter}
+    name = "you'll start with a town center"
+
+DefaultMod(engine.Mod):
+    Activate<engine.StartConfigs>():
+        available += {DefaultConfig}
+
+    patches = {Activate}
