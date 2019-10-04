@@ -1,7 +1,7 @@
 
 package com.maanoo.jnyan;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -15,11 +15,11 @@ public class TestOperations {
         final ValueHolder.Int v10 = new ValueHolder.Int(10);
 
         NyanOperation.Operation.MultiplyI.perform(v10, v5);
-        assertTrue(v10.value == 50);
+        assertEquals(50, v10.value);
         NyanOperation.Operation.DivideI.perform(v10, v5);
-        assertTrue(v10.value == 10);
+        assertEquals(10, v10.value);
         NyanOperation.Operation.AddI.perform(v10, v5);
-        assertTrue(v10.value == 15);
+        assertEquals(15, v10.value);
 
     }
 

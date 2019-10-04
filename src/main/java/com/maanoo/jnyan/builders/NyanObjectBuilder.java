@@ -48,6 +48,8 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
             iter.consume(Token.Type.Keyword, "[");
             while (!iter.peek(0).text.equals("[")) {
 
+                // TODO parse the +
+
                 parentmods.add(iter.peek(0).text);
                 parents.add(iter.peek(0).text);
                 iter.skip(1);
