@@ -49,6 +49,11 @@ public abstract class NyanType {
     @Override
     public abstract String toString();
 
+    @SuppressWarnings("unchecked")
+    public final <T extends NyanType> T get() {
+        return (T) this;
+    }
+
     // ===
 
     public static final class Simple extends NyanType {
