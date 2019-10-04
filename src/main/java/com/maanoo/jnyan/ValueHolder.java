@@ -3,6 +3,23 @@ package com.maanoo.jnyan;
 
 public abstract class ValueHolder {
 
+    public static ValueHolder create(NyanType type, TokenIter iter, Database database) {
+
+        if (type.type == NyanType.Type.Int) {
+            return new Int(iter);
+        } else if (type.type == NyanType.Type.Float) {
+            return new Float(iter);
+        } else if (type.type == NyanType.Type.Bool) {
+            return new Bool(iter);
+        } else if (type.type == NyanType.Type.Text) {
+            return new Text(iter);
+        } else if (type.type == NyanType.Type.File) {
+            return new File(iter);
+        }
+
+        throw new RuntimeException("Cannot parse value of " + type);
+    }
+
     // ===
 
     public abstract ValueHolder copy();
