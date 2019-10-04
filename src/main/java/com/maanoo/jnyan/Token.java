@@ -7,11 +7,21 @@ public class Token {
 
         Keyword, Name,
 
-        Text, Number, Bool,
+        Text(true), Number(true), Bool(true),
 
         Newline, Indent,
 
         Comment;
+
+        public final boolean value;
+
+        private Type() {
+            this(false);
+        }
+
+        private Type(boolean value) {
+            this.value = value;
+        }
 
     }
 
