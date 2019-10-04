@@ -6,10 +6,8 @@ import java.util.Arrays;
 
 public abstract class NyanType {
 
-    // public static final NyanType RootObject = new
-    // NyanType.Reference(NyanObject.RootObject);
-    // public static final NyanType RootPatch = new
-    // NyanType.Reference(NyanObject.RootPatch);
+    public static final NyanType RootObject = new NyanType.Reference(NyanObject.RootObject);
+    public static final NyanType RootPatch = new NyanType.Reference(NyanObject.RootPatch);
 
     // ===
 
