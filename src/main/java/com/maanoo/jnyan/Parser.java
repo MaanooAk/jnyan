@@ -9,7 +9,7 @@ import com.maanoo.jnyan.util.StringSet;
 
 public class Parser {
 
-    // TODO make string set on costructor
+    // TODO move all to constructor
 
     private StringSet delims = StringSet.createDelim(": = ( ) < > [ ] { } o{ , @ + += -= *= /= &= |= # \n", " ");
     private StringSet whitespace = StringSet.create(" ", "\t");
@@ -64,11 +64,15 @@ public class Parser {
 
     public ArrayList<Token> parse(String text) {
         final ArrayList<Token> l = new ArrayList<>();
+
+        // add padding for the start of the line condition check
         l.add(new Token(Token.Type.Newline));
 
-        final Iter iter = new Iter(text);
+        // add padding for the lookahead check
+        final Iter iter = new Iter(text + "\n");
 
-        while (iter.has()) {
+        // check for two in order to skip the last added previously new line
+        while (iter.has(2)) {
             final char c = iter.peek();
 
             // ===
@@ -81,19 +85,19 @@ public class Parser {
                 l.add(new Token(Token.Type.Newline, ";\n"));
                 iter.skip();
 
-            } else if (iter.contains(delims, iter.peek(), iter.peek(1))) {
+            } else if (iter.contains(delims, iter.peek(), iter.peek(1))) { // keywords
                 final String m = iter.match(delims, iter.peek(), iter.peek(1));
                 l.add(new Token(Token.Type.Keyword, m));
                 iter.skip(m.length());
 
-            } else if (iter.contains(whitespace, iter.peek(), iter.peek(1))) {
+            } else if (iter.contains(whitespace, iter.peek(), iter.peek(1))) { // whitespace
                 final String pad = iter.collectUntillLast(whitespace);
                 if (l.get(l.size() - 1).type == Token.Type.Newline) {
                     l.add(new Token(Token.Type.Indent, pad));
                 }
                 iter.skip();
 
-            } else if (c == '"') {
+            } else if (c == '"') { // string and file literals
                 iter.skip(1);
                 String token = iter.collectUntill(stringend, stringend);
                 while (iter.peek(0) == '\\') {
@@ -113,7 +117,7 @@ public class Parser {
                 iter.skip(1);
                 l.add(new Token(Token.Type.Text, token));
 
-            } else {
+            } else { // values and names
                 final String token = iter.collectUntill(delims, whitespace);
 
                 final Token.Type type = token.matches("[-+]?([0-9]*.?[0-9]+|inf)") ? Token.Type.Number : //
@@ -126,7 +130,7 @@ public class Parser {
 
         }
 
-        l.add(new Token(Token.Type.Newline));
+        l.remove(0); // remove the padding added at the start
         return l;
     }
 
