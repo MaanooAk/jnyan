@@ -11,7 +11,9 @@ public class Token {
 
         Newline, Indent,
 
-        Comment;
+        Comment
+
+        ;
 
         public final boolean value;
 
