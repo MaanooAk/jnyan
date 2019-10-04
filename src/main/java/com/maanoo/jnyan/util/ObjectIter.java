@@ -7,29 +7,39 @@ import java.util.List;
 
 public class ObjectIter<T> implements Iterator<T> {
 
-    private final List<T> tokens;
+    private final List<T> objects;
     private int index;
 
     public ObjectIter(List<T> tokens) {
-        this.tokens = tokens;
+        this.objects = tokens;
         index = 0;
     }
 
+    public List<T> source() {
+        return objects;
+    }
+
+    public int passed() {
+        return index;
+    }
+
+    // ===
+
     public boolean has() {
-        return index < tokens.size();
+        return index < objects.size();
     }
 
     public boolean has(int count) {
         assert count >= 0;
-        return index + count < tokens.size();
+        return index + count < objects.size();
     }
 
     public T peek() {
-        return tokens.get(index);
+        return objects.get(index);
     }
 
     public T peek(int skip) {
-        return tokens.get(index + skip);
+        return objects.get(index + skip);
     }
 
     public void skip() {
@@ -43,7 +53,7 @@ public class ObjectIter<T> implements Iterator<T> {
 
     @Override
     public T next() {
-        return tokens.get(index++);
+        return objects.get(index++);
     }
 
     // Iterator implementation

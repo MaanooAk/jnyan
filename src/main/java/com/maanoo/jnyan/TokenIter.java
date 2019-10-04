@@ -14,6 +14,10 @@ public class TokenIter extends ObjectIter<Token> {
         super(tokens);
     }
 
+    public TokenIter extract(int start, int end) {
+        return new TokenIter(this.source().subList(start, end));
+    }
+
     // ===
 
     public Token next(Token.Type type) {

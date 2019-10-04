@@ -4,7 +4,14 @@ package com.maanoo.jnyan;
 import java.util.Arrays;
 
 
-public class NyanType {
+public abstract class NyanType {
+
+    // public static final NyanType RootObject = new
+    // NyanType.Reference(NyanObject.RootObject);
+    // public static final NyanType RootPatch = new
+    // NyanType.Reference(NyanObject.RootPatch);
+
+    // ===
 
     public enum Type {
 
@@ -31,6 +38,8 @@ public class NyanType {
 
     }
 
+    // ===
+
     public final Type type;
 
     public NyanType(Type type) {
@@ -38,8 +47,20 @@ public class NyanType {
     }
 
     @Override
-    public String toString() {
-        return type.name();
+    public abstract String toString();
+
+    // ===
+
+    public static final class Simple extends NyanType {
+
+        public Simple(Type type) {
+            super(type);
+        }
+
+        @Override
+        public String toString() {
+            return type.name();
+        }
     }
 
     public static final class Paramed extends NyanType {

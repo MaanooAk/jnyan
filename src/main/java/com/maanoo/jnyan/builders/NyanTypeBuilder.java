@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.maanoo.jnyan.NyanObject;
+import com.maanoo.jnyan.Database;
 import com.maanoo.jnyan.NyanType;
 import com.maanoo.jnyan.NyanType.Type;
 import com.maanoo.jnyan.Token;
@@ -77,7 +77,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
         }
     }
 
-    public NyanType build(HashMap<String, NyanObject> database) {
+    public NyanType build(Database database) {
 
         assert name != null || params != null;
 
