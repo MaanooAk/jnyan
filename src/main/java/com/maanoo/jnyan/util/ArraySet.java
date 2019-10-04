@@ -1,30 +1,42 @@
 
 package com.maanoo.jnyan.util;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class ArraySet<T> extends ArrayList<T> {
+public class ArraySet<T> extends AbstractList<T> {
 
-    private static final long serialVersionUID = 9106868193493366394L;
+    private final ArrayList<T> list;
 
     public ArraySet() {
-        super();
+        list = new ArrayList<>();
     }
 
     public ArraySet(Collection<? extends T> c) {
-        super(c);
-    }
-
-    public ArraySet(int initialCapacity) {
-        super(initialCapacity);
+        list = new ArrayList<>(c);
     }
 
     @Override
     public boolean add(T e) {
         if (contains(e)) return false;
         return super.add(e);
+    }
+
+    @Override
+    public T get(int index) {
+        return list.get(index);
+    }
+
+    @Override
+    public int size() {
+        return list.size();
+    }
+
+    @Override
+    public void clear() {
+        list.clear();
     }
 
 }

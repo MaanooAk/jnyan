@@ -17,6 +17,8 @@ public class NyanOperation {
         AddF(Float, "+="), //
         AddFI(Float, "+=", Int), //
         AddSet(Set, "+="), //
+        AddOrderedSet(OrderedSet, "+="), //
+        AddList(List, "+="), //
         AddDict(Dict, "+="), //
 
         DivideI(Int, "/="), //
@@ -46,6 +48,56 @@ public class NyanOperation {
         };
 
         public boolean perform(ValueHolder target, ValueHolder value) {
+
+            switch (this) {
+            case TextAppend:
+                ((ValueHolder.Text) target).value += ((ValueHolder.Text) value).value;
+                return true;
+            case AddI:
+                ((ValueHolder.Int) target).value += ((ValueHolder.Int) value).value;
+                return true;
+            case AddIF:
+                ((ValueHolder.Int) target).value += ((ValueHolder.Float) value).value;
+                return true;
+            case AddF:
+                ((ValueHolder.Float) target).value += ((ValueHolder.Float) value).value;
+                return true;
+            case AddFI:
+                ((ValueHolder.Float) target).value += ((ValueHolder.Int) value).value;
+                return true;
+            case MultiplyI:
+                ((ValueHolder.Int) target).value *= ((ValueHolder.Int) value).value;
+                return true;
+            case MultiplyIF:
+                ((ValueHolder.Int) target).value *= ((ValueHolder.Float) value).value;
+                return true;
+            case DivideI:
+                ((ValueHolder.Int) target).value /= ((ValueHolder.Int) value).value;
+                return true;
+            case DivideF:
+                ((ValueHolder.Float) target).value /= ((ValueHolder.Float) value).value;
+                return true;
+            case DivideIF:
+                ((ValueHolder.Int) target).value /= ((ValueHolder.Float) value).value;
+                return true;
+            case MultiplyF:
+                ((ValueHolder.Float) target).value *= ((ValueHolder.Float) value).value;
+                return true;
+            case AddSet:
+                ((ValueHolder.Set) target).values.addAll(((ValueHolder.Set) value).values);
+                return true;
+            case AddOrderedSet:
+                ((ValueHolder.OrderedSet) target).values.addAll(((ValueHolder.OrderedSet) value).values);
+                return true;
+            case AddList:
+                ((ValueHolder.Lista) target).values.addAll(((ValueHolder.Lista) value).values);
+                return true;
+            case AddDict:
+                ((ValueHolder.Dict) target).values.putAll(((ValueHolder.Dict) value).values);
+                return true;
+            case Assign:
+                throw new RuntimeException();
+            }
 
             throw new RuntimeException(name() + " not implemented");
         }
