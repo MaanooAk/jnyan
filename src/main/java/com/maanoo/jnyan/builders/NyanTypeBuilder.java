@@ -54,7 +54,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
 
             iter.consume(Token.Type.Keyword, "(");
             final NyanTypeBuilder param1 = new NyanTypeBuilder(iter);
-            if (iter.peek(0).text.equals(",")) iter.skip(1);
+            iter.consumeOptional(Token.Type.Keyword, ",");
             final NyanTypeBuilder param2 = new NyanTypeBuilder(iter);
             iter.consume(Token.Type.Keyword, ")");
 

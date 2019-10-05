@@ -239,7 +239,7 @@ public abstract class ValueHolder {
                 iter.consume(Token.Type.Keyword, end);
                 return;
             } else {
-                iter.consume(Token.Type.Keyword, sep);
+                iter.consumeOptional(Token.Type.Keyword, sep);
             }
         }
 
@@ -267,7 +267,7 @@ public abstract class ValueHolder {
                 iter.consume(Token.Type.Keyword, end);
                 return;
             } else {
-                iter.consume(Token.Type.Keyword, sep);
+                iter.consumeOptional(Token.Type.Keyword, sep);
             }
         }
 

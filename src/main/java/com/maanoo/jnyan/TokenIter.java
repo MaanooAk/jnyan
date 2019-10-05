@@ -40,6 +40,13 @@ public class TokenIter extends ObjectIter<Token> {
         skip(1);
     }
 
+    public void consumeOptional(Token.Type type, String text) {
+        final Token t = peek(0);
+        if (t.type == type && t.text.equals(text)) {
+            skip(1);
+        }
+    }
+
     // ===
 
     private void check(int skip, Token.Type type) {

@@ -61,7 +61,7 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
                 if (iter.peek(0).text.equals("]")) {
                     break;
                 } else {
-                    iter.consume(Token.Type.Keyword, ",");
+                    iter.consumeOptional(Token.Type.Keyword, ",");
                 }
             }
             iter.consume(Token.Type.Keyword, "]");
@@ -75,7 +75,7 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
             if (iter.peek(0).text.equals(")")) {
                 break;
             } else {
-                iter.consume(Token.Type.Keyword, ",");
+                iter.consumeOptional(Token.Type.Keyword, ",");
             }
         }
         iter.consume(Token.Type.Keyword, ")");
