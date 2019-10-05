@@ -5,9 +5,6 @@ Mod():
     name : text
     patches : set(Patch)
 
-Ability():
-    mouse_animation : file
-
 Unit():
     name : text
     hp : int
@@ -76,6 +73,7 @@ Villager(Unit):
 
 
 # Teleport mod:
+
 TeleportBlurb(Animation):
     image = "teleport_whooosh.png"
     frames = 10

@@ -41,10 +41,10 @@ public class Database extends View {
 
     public void load(Path path) throws IOException {
         final String text = new String(Files.readAllBytes(path), Charset.forName("UTF-8"));
-        load(text, path.getFileName().toString());
+        load(text, path.getFileName().toString(), path.getParent());
     }
 
-    public void load(String text, String source) {
+    public void load(String text, String source, Path directory) throws IOException {
 
         // TODO clean up
 
@@ -55,18 +55,28 @@ public class Database extends View {
 
         final ArrayList<NyanObjectBuilder> all = new ArrayList<>();
 
-        final String namespace = source.substring(0, source.indexOf('.'));
+        String namespace = source.substring(0, source.indexOf('.'));
 
-        while (iter.has(1) && iter.peek(0).type == Token.Type.Newline)
+        while (iter.has(1) && iter.peek(0).type == Token.Type.Newline) {
             iter.skip(1);
-        while (iter.has(1)) {
+        }
+
+        while (iter.has(2)) {
 
             if (iter.peek(0).text.equals("namespace")) {
                 iter.skip(1);
-                String ns = iter.next().text;
-                if (ns.equals(".")) ns = null;
 
-                // namespace = ns;
+                String ns = iter.next().text;
+                if (ns.equals(".")) ns = source.substring(0, source.indexOf('.'));
+
+                namespace = ns;
+
+            } else if (iter.peek(0).text.equals("import")) {
+                iter.skip(1);
+
+                final String target = iter.peek(0).text;
+                final Path path = directory.resolve(target + ".nyan");
+                load(path);
 
             } else {
 

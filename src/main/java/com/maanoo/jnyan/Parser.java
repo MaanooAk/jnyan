@@ -87,9 +87,15 @@ public class Parser {
             if (c == '#') { // single line comments
                 @SuppressWarnings("unused")
                 final String comment = iter.collectUntill(newline, nothing);
-                // l.add(new Token(Token.Type.Comment, comment, origin.get()));
+//                l.add(new Token(Token.Type.Comment, comment, origin.get()));
 
             } else if (c == '\n') { // end of line
+
+                while (!l.isEmpty() && (l.get(l.size() - 1).type == Token.Type.Indent
+                        || l.get(l.size() - 1).type == Token.Type.Newline)) {
+                    l.remove(l.size() - 1);
+                }
+
                 origin.addLine();
                 l.add(new Token(Token.Type.Newline, "\n", origin.get()));
                 iter.skip();
@@ -140,7 +146,8 @@ public class Parser {
 
         }
 
-        l.remove(0); // remove the padding added at the start
+        // l.remove(0); // remove the padding added at the start
+        l.add(new Token(Token.Type.Newline, origin.get()));
         return l;
     }
 
