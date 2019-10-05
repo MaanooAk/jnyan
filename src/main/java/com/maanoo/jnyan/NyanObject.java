@@ -3,8 +3,6 @@ package com.maanoo.jnyan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -81,23 +79,23 @@ public class NyanObject {
         return false;
     }
 
-    public List<NyanObject> parents() {
-        final ArrayList<NyanObject> l = new ArrayList<>();
-        // wrongly simulate bfs
-        for (final NyanObject i : parents)
-            l.add(i);
-        for (final NyanObject i : parents)
-            l.addAll(i.parents());
-
-        final HashSet<NyanObject> found = new HashSet<>();
-        for (final Iterator<NyanObject> iter = l.iterator(); iter.hasNext();) {
-            final NyanObject i = iter.next();
-            if (found.contains(i)) iter.remove();
-            else found.add(i);
-        }
-
-        return l;
-    }
+//    public List<NyanObject> parents() {
+//        final ArrayList<NyanObject> l = new ArrayList<>();
+//        // wrongly simulate bfs
+//        for (final NyanObject i : parents)
+//            l.add(i);
+//        for (final NyanObject i : parents)
+//            l.addAll(i.parents());
+//
+//        final HashSet<NyanObject> found = new HashSet<>();
+//        for (final Iterator<NyanObject> iter = l.iterator(); iter.hasNext();) {
+//            final NyanObject i = iter.next();
+//            if (found.contains(i)) iter.remove();
+//            else found.add(i);
+//        }
+//
+//        return l;
+//    }
 
     // ===
 
@@ -128,7 +126,7 @@ public class NyanObject {
 
         // if (!patches.isEmpty()) throw new RuntimeException(this + " has patches");
 
-        final List<NyanObject> pars = parents();
+        final List<NyanObject> pars = C3NyanObject.get(this);
         pars.add(0, this);
 
         System.out.println(pars);
