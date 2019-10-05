@@ -137,7 +137,7 @@ public class Parser {
                 final String token = iter.collectUntill(delims, whitespace);
 
                 final Token.Type type = token.matches("[-+]?([0-9]*.?[0-9]+|inf)") ? Token.Type.Number : //
-                        token.matches("(true|false)") ? Token.Type.Bool : //
+                        token.matches("(true|false|yes|no)") ? Token.Type.Bool : //
                                 Token.Type.Name;
 
                 l.add(new Token(type, token, origin.get()));

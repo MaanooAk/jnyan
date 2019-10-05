@@ -1,0 +1,23 @@
+
+namespace main
+
+Barracks # 3
+Barracks creates	== [main.Jedi, main.Clone]
+Barracks hp 		== 4000
+Barracks model 		== ./models/m1.dat
+
+Unit     # 3
+Infantry # 3
+
+Jedi   hp  == 300
+Master hp  == 480
+
+patch ArmorUpgrade
+
+Jedi   hp  == 310
+Master hp  == 490
+
+
+Food autodrop == false
+patch AutodropFood
+Food autodrop == true

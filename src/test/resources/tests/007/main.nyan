@@ -1,0 +1,73 @@
+
+# A simple object
+Unit(): # base core unit
+    hp : int
+    cost : dict(text int) = {}
+    animation : file
+
+Building():
+    hp : int
+    creates : set(Unit) = {}
+    model : file
+
+Infantry(Unit):
+    ...
+
+Forcy(Unit):
+    force : float = 0.5
+
+Clone(Infantry):
+    hp = 50
+    cost = {"food": 100 "blaster": 1}
+    animation = "./anim1.ani"
+
+CloneLady(Clone):
+    hp *= 0.5
+
+Jedi(Infantry):
+    hp = 300
+    animation = "./anim2.ani"
+
+Master( Jedi Forcy ):
+    hp *= 1.60
+    force = .8
+
+Barracks(Building):
+    hp = 4000
+    creates = { Clone Jedi }
+    
+    model = "./models/m1.dat"
+
+ArmorUpgrade<Infantry>():
+    hp defer += 10
+
+
+Resource():
+    name : text
+    autodrop : bool = false
+    
+Food(Resource):
+    name = "food"
+Wood(Resource):
+    name = "wood"
+Gold(Resource):
+    name = "metal"
+
+Faith(Resource):
+    name = "fait\"h"
+    autodrop = true
+
+Technology():
+    cost : dict(Resource int)
+    
+AutodropFood<Food>(Technology):
+    autodrop = true
+    
+    cost = {Food: 100 Gold: 200}
+
+
+Treeman<Wood>[Infantry]():
+    hp = 10
+    animation = ""
+
+    

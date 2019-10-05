@@ -112,7 +112,7 @@ public abstract class ValueHolder {
 
         public Float(TokenIter iter) {
             final String text = iter.next(Token.Type.Number).text;
-            if (text.equals("inf")) value = java.lang.Float.POSITIVE_INFINITY;
+            if (text.equals("inf") || text.equals("+inf")) value = java.lang.Float.POSITIVE_INFINITY;
             else if (text.equals("-inf")) value = java.lang.Float.NEGATIVE_INFINITY;
             else value = java.lang.Float.parseFloat(text);
         }
@@ -138,7 +138,8 @@ public abstract class ValueHolder {
         }
 
         public Bool(TokenIter iter) {
-            value = Boolean.parseBoolean(iter.next(Token.Type.Bool).text);
+            final String text = iter.next(Token.Type.Bool).text;
+            value = text.equals("true") || text.equals("yes");
         }
 
         @Override
