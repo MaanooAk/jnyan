@@ -8,11 +8,11 @@ Villager(engine.Unit):
     hp = 100
     can_create = {TownCenter}
 
-Loom(Tech):
+Loom(engine.Tech):
     HPBoost<Villager>():
         hp += 50
 
-    patches = {HPBoost}
+    patches = o{HPBoost}
 
 TownCenter(engine.Unit):
     hp = 1500
@@ -27,4 +27,4 @@ DefaultMod(engine.Mod):
     Activate<engine.StartConfigs>():
         available += {DefaultConfig}
 
-    patches = {Activate}
+    patches = o{Activate}

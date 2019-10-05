@@ -11,7 +11,7 @@ Building():
     model : file
 
 Infantry(Unit):
-    pass : bool = false
+    ...
 
 Forcy(Unit):
     force : float = 0.5
@@ -24,17 +24,17 @@ Clone(Infantry):
 CloneLady(Clone):
     hp *= 0.5
 
-Jedai(Infantry):
+Jedi(Infantry):
     hp = 300
     animation = "./anim2.ani"
 
-Master(Jedai, Forcy):
+Master(Jedi, Forcy):
     hp *= 1.60
     force = .8
 
 Barracks(Building):
     hp = 4000
-    creates = {Clone, Jedai}
+    creates = {Clone, Jedi}
     
     model = "./models/m1.dat"
 

@@ -103,7 +103,6 @@ public class NyanObject {
         final NyanType type = getOptionalMemberType(member);
         if (type != null) return type;
 
-        System.out.println(parents);
         throw new RuntimeException("" + name + " does not have member named " + member);
     }
 
@@ -131,9 +130,8 @@ public class NyanObject {
         // if (!patches.isEmpty()) throw new RuntimeException(this + " has patches");
 
         final List<NyanObject> pars = C3NyanObject.get(this);
-        pars.add(0, this);
 
-        System.out.println(pars);
+//        System.out.println(pars);
 
         for (final NyanObject i : pars) {
             types.putAll(i.members);
@@ -158,7 +156,9 @@ public class NyanObject {
             }
 
             l.addAll(0, ldefer);
-            if (ldefer.size() > 0) System.out.println(">>>" + l);
+            // if (ldefer.size() > 0) System.out.println(">>>" + l);
+
+            if (l.isEmpty()) continue; // just the decleration
 
             int ip = 0;
             while (l.get(ip).operation != NyanOperation.Operation.Assign) {
@@ -168,17 +168,18 @@ public class NyanObject {
 
             final ValueHolder value = l.get(ip).value.value.copy();
 
-            System.out.println(i + " =\n  " + "" + " " + value);
+//            System.out.println(i + " =\n  " + "" + " " + value);
             while (--ip >= 0) {
                 final NyanOperation op = l.get(ip);
                 op.operation.perform(value, op.value.value);
 
-                System.out.println("  " + "" + " (" + op + ") " + value);
+//                System.out.println("  " + "" + " (" + op + ") " + value);
             }
 
             values.put(i, value);
         }
 
+//        System.out.println(values);
         return values;
     }
 

@@ -16,7 +16,8 @@ public class NyanOperation {
         AddIF(Int, "+=", Float), //
         AddF(Float, "+="), //
         AddFI(Float, "+=", Int), //
-        AddSet(Set, "+="), //
+        AddSet1(Set, "+="), //
+        AddSet2(Set, "|="), //
         AddOrderedSet(OrderedSet, "+="), //
         AddList(List, "+="), //
         AddDict(Dict, "+="), //
@@ -88,7 +89,8 @@ public class NyanOperation {
             case MultiplyF:
                 ((ValueHolder.Float) target).value *= ((ValueHolder.Float) value).value;
                 return true;
-            case AddSet:
+            case AddSet1:
+            case AddSet2:
                 ((ValueHolder.Set) target).values.addAll(((ValueHolder.Set) value).values);
                 return true;
             case AddOrderedSet:

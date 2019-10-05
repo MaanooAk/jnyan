@@ -21,6 +21,7 @@ Huntable(Ability):
 Unit():
     abilities : set(Ability)
     hp : int
+    graphic : file
 
 ResourceAmount():
     type : Resource

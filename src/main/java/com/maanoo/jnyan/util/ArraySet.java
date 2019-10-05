@@ -21,7 +21,7 @@ public class ArraySet<T> extends AbstractList<T> {
     @Override
     public boolean add(T e) {
         if (contains(e)) return false;
-        return super.add(e);
+        return list.add(e);
     }
 
     @Override

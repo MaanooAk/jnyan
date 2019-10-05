@@ -21,7 +21,7 @@ public abstract class C3<T> {
             // nothing
 
         } else if (parents.size() == 1) {
-            l.add(parents.get(0));
+            l.addAll(linear(parents.get(0)));
 
         } else {
 
