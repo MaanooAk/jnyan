@@ -12,13 +12,15 @@ import com.maanoo.jnyan.TokenIter;
 import com.maanoo.jnyan.ValueHolder;
 
 
-public class NyanValueBuilder implements Builder<NyanValue> {
+public class NyanValueBuilder extends Builder<NyanValue> {
 
     private TokenIter subIter;
 
     private ArrayList<String> names;
 
-    public NyanValueBuilder(TokenIter iter) {
+    public NyanValueBuilder(TokenIter iter, String namespace) {
+        super(namespace);
+
         names = new ArrayList<>();
 
         final int start = iter.passed();
@@ -26,7 +28,7 @@ public class NyanValueBuilder implements Builder<NyanValue> {
         while (iter.peek(0).type != Token.Type.Newline) {
 
             if (iter.peek(0).type == Token.Type.Name) {
-                names.add(iter.peek(0).text);
+                names.add(nm(iter.peek(0).text));
             }
 
             iter.skip(1);
@@ -45,7 +47,7 @@ public class NyanValueBuilder implements Builder<NyanValue> {
 
     public NyanValue build(Database database, NyanType type) {
 
-        final ValueHolder value = ValueHolder.create(type, subIter, database);
+        final ValueHolder value = ValueHolder.create(type, subIter, database, namespace);
 
         return new NyanValue(type, value);
     }

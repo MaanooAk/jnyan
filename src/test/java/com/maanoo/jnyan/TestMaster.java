@@ -71,7 +71,7 @@ public class TestMaster {
         final Database db = new Database();
         db.load(main);
 
-        assertTrue(db.get("Object") != null);
+        assertTrue(db.size() > 0);
     }
 
 }

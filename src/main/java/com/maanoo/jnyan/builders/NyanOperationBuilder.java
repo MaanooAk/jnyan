@@ -10,13 +10,14 @@ import com.maanoo.jnyan.NyanType;
 import com.maanoo.jnyan.TokenIter;
 
 
-public class NyanOperationBuilder implements Builder<NyanOperation> {
+public class NyanOperationBuilder extends Builder<NyanOperation> {
 
     public final String operation;
     public final boolean defer;
     public final NyanValueBuilder value;
 
-    public NyanOperationBuilder(TokenIter iter) {
+    public NyanOperationBuilder(TokenIter iter, String namespace) {
+        super(namespace);
 
         final String first = iter.next().text;
 
@@ -27,7 +28,7 @@ public class NyanOperationBuilder implements Builder<NyanOperation> {
             operation = first;
             defer = false;
         }
-        this.value = new NyanValueBuilder(iter);
+        this.value = new NyanValueBuilder(iter, namespace);
     }
 
     public void depens(Set<String> depens) {

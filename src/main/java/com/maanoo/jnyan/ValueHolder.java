@@ -12,7 +12,7 @@ import com.maanoo.jnyan.util.ArraySet;
 
 public abstract class ValueHolder {
 
-    public static ValueHolder create(NyanType type, TokenIter iter, Database database) {
+    public static ValueHolder create(NyanType type, TokenIter iter, Database database, String localNamespace) {
 
         if (type.type == NyanType.Type.Int) {
             return new Int(iter);
@@ -27,24 +27,24 @@ public abstract class ValueHolder {
 
         } else if (type.type == NyanType.Type.Set) {
             final NyanType param1 = type.<NyanType.Paramed>get().params[0];
-            return new Set(iter, param1, database);
+            return new Set(iter, param1, database, localNamespace);
 
         } else if (type.type == NyanType.Type.OrderedSet) {
             final NyanType param1 = type.<NyanType.Paramed>get().params[0];
-            return new OrderedSet(iter, param1, database);
+            return new OrderedSet(iter, param1, database, localNamespace);
 
         } else if (type.type == NyanType.Type.List) {
             final NyanType param1 = type.<NyanType.Paramed>get().params[0];
-            return new Lista(iter, param1, database);
+            return new Lista(iter, param1, database, localNamespace);
 
         } else if (type.type == NyanType.Type.Dict) {
             final NyanType param1 = type.<NyanType.Paramed>get().params[0];
             final NyanType param2 = type.<NyanType.Paramed>get().params[1];
-            return new Dict(iter, param1, param2, database);
+            return new Dict(iter, param1, param2, database, localNamespace);
 
         } else if (type.type == NyanType.Type.Object) {
             final NyanObject name = type.<NyanType.Reference>get().name;
-            return new Reference(iter, name, database);
+            return new Reference(iter, name, database, localNamespace);
         }
 
         throw new RuntimeException("Cannot parse value of " + type);
@@ -198,10 +198,10 @@ public abstract class ValueHolder {
             this.value = value;
         }
 
-        public Reference(TokenIter iter, NyanObject type, Database database) {
+        public Reference(TokenIter iter, NyanObject type, Database database, String localNamespace) {
 
             final String text = iter.next(Token.Type.Name).text;
-            value = database.get(text);
+            value = database.get(text, localNamespace);
 
             if (value == null) throw new RuntimeException("Cannot find " + text);
             if (!value.is(type)) throw new RuntimeException(text + " is not instance of " + type);
@@ -222,7 +222,7 @@ public abstract class ValueHolder {
     // ===
 
     protected static void consumeCollection(Collection<ValueHolder> values, TokenIter iter, String start, String sep,
-            String end, NyanType type, Database database) {
+            String end, NyanType type, Database database, String localNamespace) {
 
         iter.consume(Token.Type.Keyword, start);
 
@@ -233,7 +233,7 @@ public abstract class ValueHolder {
 
         while (iter.has()) {
 
-            values.add(ValueHolder.create(type, iter, database));
+            values.add(ValueHolder.create(type, iter, database, localNamespace));
 
             if (iter.peek().text.equals(end)) {
                 iter.consume(Token.Type.Keyword, end);
@@ -246,7 +246,8 @@ public abstract class ValueHolder {
     }
 
     protected static void consumeCollection(Map<ValueHolder, ValueHolder> values, TokenIter iter, String start,
-            String sep, String sepsep, String end, NyanType type1, NyanType type2, Database database) {
+            String sep, String sepsep, String end, NyanType type1, NyanType type2, Database database,
+            String localNamespace) {
 
         iter.consume(Token.Type.Keyword, start);
 
@@ -257,9 +258,9 @@ public abstract class ValueHolder {
 
         while (iter.has()) {
 
-            final ValueHolder v1 = ValueHolder.create(type1, iter, database);
+            final ValueHolder v1 = ValueHolder.create(type1, iter, database, localNamespace);
             iter.consume(Token.Type.Keyword, sepsep);
-            final ValueHolder v2 = ValueHolder.create(type2, iter, database);
+            final ValueHolder v2 = ValueHolder.create(type2, iter, database, localNamespace);
 
             values.put(v1, v2);
 
@@ -283,10 +284,10 @@ public abstract class ValueHolder {
             this.values = new HashSet<ValueHolder>(values);
         }
 
-        public Set(TokenIter iter, NyanType type, Database database) {
+        public Set(TokenIter iter, NyanType type, Database database, String localNamespace) {
             values = new HashSet<>();
 
-            consumeCollection(values, iter, "{", ",", "}", type, database);
+            consumeCollection(values, iter, "{", ",", "}", type, database, localNamespace);
         }
 
         @Override
@@ -309,10 +310,10 @@ public abstract class ValueHolder {
             this.values = new ArraySet<ValueHolder>(values);
         }
 
-        public OrderedSet(TokenIter iter, NyanType type, Database database) {
+        public OrderedSet(TokenIter iter, NyanType type, Database database, String localNamespace) {
             this.values = new ArraySet<>();
 
-            consumeCollection(values, iter, "o{", ",", "}", type, database);
+            consumeCollection(values, iter, "o{", ",", "}", type, database, localNamespace);
         }
 
         @Override
@@ -335,10 +336,10 @@ public abstract class ValueHolder {
             this.values = new ArrayList<ValueHolder>(values);
         }
 
-        public Lista(TokenIter iter, NyanType type, Database database) {
+        public Lista(TokenIter iter, NyanType type, Database database, String localNamespace) {
             this.values = new ArrayList<>();
 
-            consumeCollection(values, iter, "[", ",", "]", type, database);
+            consumeCollection(values, iter, "[", ",", "]", type, database, localNamespace);
         }
 
         @Override
@@ -361,10 +362,10 @@ public abstract class ValueHolder {
             this.values = new HashMap<ValueHolder, ValueHolder>(values);
         }
 
-        public Dict(TokenIter iter, NyanType key, NyanType value, Database database) {
+        public Dict(TokenIter iter, NyanType key, NyanType value, Database database, String localNamespace) {
             this.values = new HashMap<>();
 
-            consumeCollection(values, iter, "{", ",", ":", "}", key, value, database);
+            consumeCollection(values, iter, "{", ",", ":", "}", key, value, database, localNamespace);
         }
 
         @Override

@@ -13,7 +13,7 @@ import com.maanoo.jnyan.Token;
 import com.maanoo.jnyan.TokenIter;
 
 
-public class NyanObjectBuilder implements Builder<NyanObject> {
+public class NyanObjectBuilder extends Builder<NyanObject> {
 
     public final String name;
     public final ArrayList<String> parents;
@@ -31,7 +31,9 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
     }
 
     public NyanObjectBuilder(TokenIter iter, String namespace, int depth) {
-        name = (namespace != null ? namespace + "." : "") + iter.next().text;
+        super(namespace);
+
+        name = nm(iter.next().text);
 
         parents = new ArrayList<>();
         members = new HashMap<>();
@@ -42,7 +44,7 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
         if (iter.peek(0).text.equals("<")) {
             iter.consume(Token.Type.Keyword, "<");
 
-            target = iter.next().text;
+            target = nm(iter.next().text);
             iter.consume(Token.Type.Keyword, ">");
         } else {
             target = null;
@@ -54,8 +56,8 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
                 // TODO parse the +
 
-                parentmods.add(iter.peek(0).text);
-                parents.add(iter.peek(0).text);
+                parentmods.add(nm(iter.peek(0).text));
+                parents.add(nm(iter.peek(0).text));
                 iter.skip(1);
 
                 if (iter.peek(0).text.equals("]")) {
@@ -70,7 +72,7 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
         iter.consume(Token.Type.Keyword, "(");
         while (!iter.peek(0).text.equals(")")) {
 
-            parents.add(iter.next().text);
+            parents.add(nm(iter.next().text));
 
             if (iter.peek(0).text.equals(")")) {
                 break;
@@ -103,11 +105,11 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
             if (op.equals(":")) {
                 iter.skip(2);
-                members.put(name, new NyanTypeBuilder(iter));
+                members.put(name, new NyanTypeBuilder(iter, namespace));
 
                 if (iter.peek(0).type != Token.Type.Newline) {
 
-                    operations.put(name, new NyanOperationBuilder(iter));
+                    operations.put(name, new NyanOperationBuilder(iter, namespace));
                 }
 
             } else if (op.equals("(") || op.equals("<")) {
@@ -116,7 +118,7 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
             } else {
                 iter.skip(1);
-                operations.put(name, new NyanOperationBuilder(iter));
+                operations.put(name, new NyanOperationBuilder(iter, namespace));
 
             }
             iter.consume(Token.Type.Newline);
@@ -127,6 +129,11 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
         }
 
+    }
+
+    @Override
+    protected String nm(String name) {
+        return name.indexOf('.') == -1 ? namespace + "." + name : name;
     }
 
     public Set<String> depens() {
@@ -170,17 +177,17 @@ public class NyanObjectBuilder implements Builder<NyanObject> {
 
         } else {
             NyanObject.Patch p;
-            o = p = new NyanObject.Patch(name, database.get(target));
+            o = p = new NyanObject.Patch(name, database.get(target, namespace));
 
             for (final String i : parentmods)
-                p.parentmods.add(database.get(i));
+                p.parentmods.add(database.get(i, namespace));
 
             // add root object
             o.parents.add(NyanObject.RootPatch);
         }
 
         for (final String i : parents)
-            o.parents.add(database.get(i));
+            o.parents.add(database.get(i, namespace));
 
         for (final Map.Entry<String, NyanTypeBuilder> i : members.entrySet()) {
             o.members.put(i.getKey(), i.getValue().build(database));

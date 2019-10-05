@@ -23,6 +23,7 @@ public class NyanObject {
     public final String name;
     public final NyanObject.Patch patchjob;
 
+    @SuppressWarnings("unused")
     private int mod;
 
     public final ArrayList<NyanObject> parents;

@@ -85,6 +85,7 @@ public class Parser {
             // ===
 
             if (c == '#') { // single line comments
+                @SuppressWarnings("unused")
                 final String comment = iter.collectUntill(newline, nothing);
                 // l.add(new Token(Token.Type.Comment, comment, origin.get()));
 

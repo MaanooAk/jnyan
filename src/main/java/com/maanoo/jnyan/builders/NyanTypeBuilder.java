@@ -12,7 +12,7 @@ import com.maanoo.jnyan.Token;
 import com.maanoo.jnyan.TokenIter;
 
 
-public class NyanTypeBuilder implements Builder<NyanType> {
+public class NyanTypeBuilder extends Builder<NyanType> {
 
     public static HashMap<String, Type> map = new HashMap<>();
     static {
@@ -27,7 +27,8 @@ public class NyanTypeBuilder implements Builder<NyanType> {
     public final String name;
     public final NyanTypeBuilder[] params;
 
-    public NyanTypeBuilder(TokenIter iter) {
+    public NyanTypeBuilder(TokenIter iter, String namespace) {
+        super(namespace);
 
         {
             final String typeText = iter.next().text;
@@ -35,7 +36,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
             final NyanType.Type type = map.get(typeText);
             if (type == null) {
                 this.type = Type.Object;
-                this.name = typeText;
+                this.name = nm(typeText);
             } else {
                 this.type = type;
                 this.name = null;
@@ -45,7 +46,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
         if (type == Type.Set || type == Type.OrderedSet || type == Type.List) {
 
             iter.consume(Token.Type.Keyword, "(");
-            final NyanTypeBuilder param = new NyanTypeBuilder(iter);
+            final NyanTypeBuilder param = new NyanTypeBuilder(iter, namespace);
             iter.consume(Token.Type.Keyword, ")");
 
             params = new NyanTypeBuilder[] { param };
@@ -53,9 +54,9 @@ public class NyanTypeBuilder implements Builder<NyanType> {
         } else if (type == Type.Dict) {
 
             iter.consume(Token.Type.Keyword, "(");
-            final NyanTypeBuilder param1 = new NyanTypeBuilder(iter);
+            final NyanTypeBuilder param1 = new NyanTypeBuilder(iter, namespace);
             iter.consumeOptional(Token.Type.Keyword, ",");
-            final NyanTypeBuilder param2 = new NyanTypeBuilder(iter);
+            final NyanTypeBuilder param2 = new NyanTypeBuilder(iter, namespace);
             iter.consume(Token.Type.Keyword, ")");
 
             params = new NyanTypeBuilder[] { param1, param2 };
@@ -82,7 +83,7 @@ public class NyanTypeBuilder implements Builder<NyanType> {
         assert name == null || params == null;
 
         if (name != null) {
-            return new NyanType.Reference(database.get(name));
+            return new NyanType.Reference(database.get(name, namespace));
 
         } else if (params != null) {
 

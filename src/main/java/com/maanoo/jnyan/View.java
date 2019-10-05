@@ -59,4 +59,10 @@ public class View {
         }
     }
 
+    // ===
+
+    public int size() {
+        return objects.size();
+    }
+
 }

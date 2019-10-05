@@ -25,8 +25,16 @@ public class Database extends View {
     }
 
     @Override
+    @Deprecated
     public NyanObject get(String name) {
         return objects.get(name);
+    }
+
+    public NyanObject get(String name, String localNamespace) {
+        final NyanObject o = get(name);
+        if (o != null) return o;
+
+        return get(localNamespace + "." + name);
     }
 
     // ===
@@ -47,7 +55,7 @@ public class Database extends View {
 
         final ArrayList<NyanObjectBuilder> all = new ArrayList<>();
 
-        final String namespace = null;
+        final String namespace = source.substring(0, source.indexOf('.'));
 
         while (iter.has(1) && iter.peek(0).type == Token.Type.Newline)
             iter.skip(1);
@@ -86,10 +94,7 @@ public class Database extends View {
         int lastsize = 0;
         while (!left.isEmpty()) {
             if (left.size() == lastsize) {
-                final NyanObjectBuilder stuck = left.iterator().next();
-                final Set<String> depens = stuck.depens();
-                depens.removeAll(done);
-                throw new RuntimeException("Cannot find depens of " + stuck.name + ": " + depens);
+                dependecyError(done, left);
             }
             lastsize = left.size();
             for (final Iterator<NyanObjectBuilder> it = left.iterator(); it.hasNext();) {
@@ -105,6 +110,20 @@ public class Database extends View {
             }
         }
 
+    }
+
+    private void dependecyError(Set<String> done, Set<NyanObjectBuilder> left) {
+        final StringBuilder sb = new StringBuilder("Cannot find depens of:\n");
+
+        for (final NyanObjectBuilder i : left) {
+
+            final HashSet<String> depens = new HashSet<>(i.depens());
+            depens.removeAll(done);
+
+            sb.append(i.name).append(": ").append(depens).append("\n");
+        }
+
+        throw new RuntimeException(sb.toString());
     }
 
 }
