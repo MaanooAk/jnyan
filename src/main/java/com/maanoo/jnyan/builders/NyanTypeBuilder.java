@@ -69,13 +69,13 @@ public class NyanTypeBuilder extends Builder<NyanType> {
 
     public void depens(Set<String> depens) {
 
-        if (name != null) depens.add(name);
-
-        if (params != null) {
-            for (final NyanTypeBuilder i : params) {
-                i.depens(depens);
-            }
-        }
+//        if (name != null) depens.add(name);
+//
+//        if (params != null) {
+//            for (final NyanTypeBuilder i : params) {
+//                i.depens(depens);
+//            }
+//        }
     }
 
     public NyanType build(Database database) {
@@ -83,7 +83,7 @@ public class NyanTypeBuilder extends Builder<NyanType> {
         assert name == null || params == null;
 
         if (name != null) {
-            return new NyanType.Reference(database.get(name, namespace));
+            return new NyanType.Reference(database.get(name));
 
         } else if (params != null) {
 

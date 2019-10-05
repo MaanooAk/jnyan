@@ -25,16 +25,9 @@ public class Database extends View {
     }
 
     @Override
-    @Deprecated
     public NyanObject get(String name) {
+
         return objects.get(name);
-    }
-
-    public NyanObject get(String name, String localNamespace) {
-        final NyanObject o = get(name);
-        if (o != null) return o;
-
-        return get(localNamespace + "." + name);
     }
 
     // ===
@@ -74,7 +67,13 @@ public class Database extends View {
             } else if (iter.peek(0).text.equals("import")) {
                 iter.skip(1);
 
-                final String target = iter.peek(0).text;
+                final String target = iter.next().text;
+                if (iter.peek(0).text.equals("as")) {
+                    throw new RuntimeException("Not yet");
+                } else {
+                    iter.consume(Token.Type.Newline);
+                }
+
                 final Path path = directory.resolve(target + ".nyan");
                 load(path);
 
@@ -89,15 +88,15 @@ public class Database extends View {
                 iter.skip(1);
         }
 
-        Collections.shuffle(all);
-//      Collections.sort(all, new Comparator<NyanObject.Builder>(){
-//              @Override
-//              public int compare(NyanObject.Builder p1, NyanObject.Builder p2) {
-//                  return p1.depens().size() - p2.depens().size();
-//              }
-//          });
+        // pre build object holders
 
-        final Set<String> done = objects.keySet();
+        final HashSet<String> done = new HashSet<>(objects.keySet());
+
+        for (final NyanObjectBuilder i : all) {
+            add(i.prebuild());
+        }
+
+        Collections.shuffle(all); // TODO for testing, remove
 
         final HashSet<NyanObjectBuilder> left = new HashSet<>(all);
 
@@ -114,8 +113,7 @@ public class Database extends View {
                     it.remove();
 
                     final NyanObject o = i.build(this);
-                    add(o);
-
+                    done.add(o.name);
                 }
             }
         }

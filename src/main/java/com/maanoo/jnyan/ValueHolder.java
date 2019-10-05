@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.maanoo.jnyan.builders.Builder;
 import com.maanoo.jnyan.util.ArraySet;
 
 
@@ -201,10 +202,12 @@ public abstract class ValueHolder {
         public Reference(TokenIter iter, NyanObject type, Database database, String localNamespace) {
 
             final String text = iter.next(Token.Type.Name).text;
-            value = database.get(text, localNamespace);
+            value = database.get(Builder.nm(text, localNamespace));
 
             if (value == null) throw new RuntimeException("Cannot find " + text);
-            if (!value.is(type)) throw new RuntimeException(text + " is not instance of " + type);
+
+            // TODO move elsewhere, the information may not be here yet
+//            if (!value.is(type)) throw new RuntimeException(text + " is not instance of " + type);
         }
 
         @Override

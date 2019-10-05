@@ -52,7 +52,7 @@ public class View {
     public void patch(String name) {
 
         final NyanObject.Patch patch = getPatch(name);
-        patch.target.patch(patch);
+        patch.getTarget().patch(patch);
 
         for (final View i : children) {
             i.patch(name);

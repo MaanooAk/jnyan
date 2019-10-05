@@ -103,6 +103,7 @@ public class NyanObject {
         final NyanType type = getOptionalMemberType(member);
         if (type != null) return type;
 
+        System.out.println(parents);
         throw new RuntimeException("" + name + " does not have member named " + member);
     }
 
@@ -121,6 +122,9 @@ public class NyanObject {
     // ===
 
     public HashMap<String, ValueHolder> calc() {
+
+        // TODO clean up
+
         final HashMap<String, NyanType> types = new HashMap<>();
         final HashMap<String, ValueHolder> values = new HashMap<>();
 
@@ -219,16 +223,30 @@ public class NyanObject {
 
     public static class Patch extends NyanObject {
 
-        public final NyanObject target;
+        private NyanObject target;
         public final ArrayList<NyanObject> parentmods;
+
+        public Patch(String name) {
+            this(name, null);
+        }
 
         public Patch(String name, NyanObject target) {
             super(name);
-            this.target = target;
 
             parentmods = new ArrayList<>();
 
+            if (target != null) setTarget(target);
+        }
+
+        public void setTarget(NyanObject target) {
+            assert target != null;
+            this.target = target;
+
             parents.add(target);
+        }
+
+        public NyanObject getTarget() {
+            return target;
         }
 
         @Override

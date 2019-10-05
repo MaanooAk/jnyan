@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.maanoo.jnyan.Database;
 import com.maanoo.jnyan.NyanObject;
+import com.maanoo.jnyan.NyanObject.Patch;
 import com.maanoo.jnyan.Token;
 import com.maanoo.jnyan.TokenIter;
 
@@ -165,29 +166,43 @@ public class NyanObjectBuilder extends Builder<NyanObject> {
 
     }
 
-    public NyanObject build(Database database) {
+    private NyanObject o;
 
-        final NyanObject o;
+    public NyanObject prebuild() {
 
         if (target == null) {
             o = new NyanObject(name);
+
+        } else {
+            NyanObject.Patch p;
+            o = p = new NyanObject.Patch(name);
+
+        }
+
+        return o;
+    }
+
+    public NyanObject build(Database database) {
+        if (o == null) prebuild();
+
+        if (target == null) {
 
             // add root object
             if (parents.isEmpty()) o.parents.add(NyanObject.RootObject);
 
         } else {
-            NyanObject.Patch p;
-            o = p = new NyanObject.Patch(name, database.get(target, namespace));
+            final NyanObject.Patch p = (Patch) o;
+            p.setTarget(database.get(target));
 
             for (final String i : parentmods)
-                p.parentmods.add(database.get(i, namespace));
+                p.parentmods.add(database.get(i));
 
             // add root object
             o.parents.add(NyanObject.RootPatch);
         }
 
         for (final String i : parents)
-            o.parents.add(database.get(i, namespace));
+            o.parents.add(database.get(i));
 
         for (final Map.Entry<String, NyanTypeBuilder> i : members.entrySet()) {
             o.members.put(i.getKey(), i.getValue().build(database));

@@ -38,14 +38,18 @@ public class TestMaster {
 
     private Path directory;
     private Path main;
+    private List<Path> all;
 
-    public TestMaster(String name) {
+    public TestMaster(String name) throws IOException {
 
         directory = Paths.get(PATH, name);
         main = directory.resolve("main.nyan");
+        all = Files.list(directory) //
+                .filter(Files::isRegularFile).filter(i -> i.getFileName().endsWith(".nyan")) //
+                .collect(Collectors.toList());
 
         if (!Files.exists(main)) {
-            main = null;
+            main = all.get(0);
         }
     }
 
@@ -54,15 +58,19 @@ public class TestMaster {
     @Test
     public void parse() throws Exception {
 
-        final Parser p = new Parser();
-        final String text = new String(Files.readAllBytes(main), Charset.forName("UTF-8"));
-        final ArrayList<Token> tokens = p.parse(text);
+        for (final Path i : all) {
 
-//        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//        System.out.println(main);
-//        System.out.println(tokens);
+            final Parser p = new Parser();
+            final String text = new String(Files.readAllBytes(i), Charset.forName("UTF-8"));
+            final ArrayList<Token> tokens = p.parse(text);
 
-        assertTrue(tokens.size() > 0);
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println(main);
+            System.out.println(tokens);
+
+            assertTrue(tokens.size() > 0);
+
+        }
     }
 
     @Test
